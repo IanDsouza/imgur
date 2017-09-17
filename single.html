@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>IMGUR</title>
+	<link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+	<link href="css/style.css" rel='stylesheet' type='text/css' />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="" 
+	/>
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+		<link href='http://fonts.googleapis.com/css?family=Oswald:100,400,300,700' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,300italic,400italic,600italic' rel='stylesheet' type='text/css'>
+
+		  <script src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/move-top.js"></script>
+<script type="text/javascript" src="js/easing.js"></script>
+<script type="text/javascript">
+			jQuery(document).ready(function($) {
+				$(".scroll").click(function(event){		
+					event.preventDefault();
+					$('html,body').animate({scrollTop:$(this.hash).offset().top},900);
+				});
+			});
+</script>
+<!---->
+
+</head>
+<body>
+
+<div class="content">
+	 <div class="container">
+		 <div class="content-grids">
+			 <div class="col-md-8 col-md-offset-2 content-main">
+				 <div class="content-grid">
+					 <div class="content-grid-single">
+						 <h3>TITLE</h3>
+						 <img class="single-pic" id="myPic" src="https://dummyimage.com/600x400/ffffff/999ddb&text=Loading+...." alt=""/>
+						 
+						 <div class="content-form">
+							 <h3>Leave a comment</h3>
+							 <form>
+							 
+							 <textarea placeholder="Comments" id="myNewComment"></textarea>
+							 <input type="button" value="SEND" id="comment-btn"/>
+							 </form>
+						 </div>
+						 <div class="comments">
+							 <h3>Comment</h3>
+							 <div id="myComments">
+								 
+							</div>	 
+							
+						</div>
+					  </div>
+					 
+				 </div>			 			 
+			 </div>
+			 <div class="clearfix"></div>
+		 </div>
+	 </div>
+</div>
+</div>
+<script type="text/javascript">
+
+		function GetURLParameter(sParam){
+		    var sPageURL = window.location.search.substring(1);
+		    var sURLVariables = sPageURL.split('&');
+		    for (var i = 0; i < sURLVariables.length; i++) 
+		    {
+		        var sParameterName = sURLVariables[i].split('=');
+		        if (sParameterName[0] == sParam) 
+		        {
+		            return sParameterName[1];
+		        }
+		    }
+		}
+
+		function postComment(comment){
+			$.ajax({
+		        url:"postComment.php", 
+		        type: "POST",
+		        data: {
+		        	image_id: GetURLParameter('id'),
+		        	comment: comment
+		        },
+		        success:function(result){
+		         	alert(result);
+					$('#myComments').prepend(html);
+		        },
+		        error:function(result){
+		         	alert(result);
+		        }	
+		    });
+		}
+
+
+		$(document).ready(function() {
+		
+				$.ajax({
+			        url:"getImage.php", 
+			        type: "POST",
+			        data: {
+			        	id: GetURLParameter('id')
+			        },
+			        success:function(result){
+			         	$('#myPic').attr('src', result);
+			        },
+			        error:function(result){
+			         	alert(result);
+			        }	
+			    });
+
+
+			    $.ajax({
+			        url:"getComments.php",
+			        type: "POST", 
+			        data: {
+			        	id: GetURLParameter('id')
+			        },
+			        success:function(result){
+			         	var ian = JSON.parse(result);
+			         	var data = ian.data;
+			         	for(var i in data){
+			         		var author = data[i].author;
+			         		var comment = data[i].comment;
+			         		var datetime = data[i].datetime;
+			         		var html = '<div class="comment-grid">'+
+								 '<img src="images/pic.png" alt=""/>'+
+								 '<div class="comment-info">'+
+								 '<h4>'+ author +'</h4>'+
+								 '<p>'+ comment +'</p>'+
+								 '<a href="#">Reply</a>'+
+								 '</div>'+
+								 '<div class="clearfix"></div>'+
+							 '</div>';
+
+							 $('#myComments').append(html);
+			         	}
+			        },
+			        error:function(result){
+			         	alert(result);
+			        }	
+			    });
+
+			    $('.reply-btn').click(function(){
+			    	alert("jlkasjdlkjlkjkl");
+			    });
+
+			    $('#comment-btn').click(function(){
+			    	postComment($('#myNewComment').val());
+			    });
+
+
+			$().UItoTop({ easingType: 'easeOutQuart'});
+		});
+</script>
+<a href="#to-top" id="toTop" style="display: block;"> <span id="toTopHover" style="opacity: 1;"> </span></a>
+
+
+</body>
+</html>
